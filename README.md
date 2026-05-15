@@ -8,28 +8,15 @@ An end-to-end NLP Sentiment Analysis project that classifies movie reviews as Po
 
 This project focuses on Natural Language Processing (NLP) and Sentiment Analysis using the IMDb Movie Reviews dataset.
 
-The project includes:
-- Data cleaning
+The project workflow includes:
+- Data collection
 - Text preprocessing
 - Feature engineering
 - Machine Learning models
 - Deep Learning models
 - API development
-- Frontend integration
+- Frontend UI
 - Deployment
-
----
-
-# Project Goals
-
-- Learn Natural Language Processing (NLP)
-- Understand text preprocessing techniques
-- Build sentiment classification models
-- Train Machine Learning algorithms
-- Explore Deep Learning for NLP
-- Build a prediction API
-- Create an interactive UI
-- Deploy a production-ready ML application
 
 ---
 
@@ -38,31 +25,23 @@ The project includes:
 ## Programming Language
 - Python
 
-## Data Analysis
+## Libraries & Frameworks
 - Pandas
 - NumPy
-
-## Visualization
 - Matplotlib
 - Seaborn
-
-## Machine Learning
 - Scikit-learn
-
-## NLP
 - NLTK
-
-## Development Environment
 - Jupyter Notebook
 
 ---
 
 # Dataset
 
-Dataset Used:
+Dataset:
 - IMDb Movie Reviews Dataset
 
-The dataset contains movie reviews labeled as:
+Classification Labels:
 - Positive
 - Negative
 
@@ -87,60 +66,81 @@ sentiment-analysis-project/
 
 ---
 
-# Completed Steps
+# Step 1 — Setup & Data Collection ✅
 
-## Step 1 — Setup & Data Collection
 Completed:
 - Project directory setup
-- Python virtual environment creation
+- Python virtual environment setup
 - Jupyter Notebook setup
 - Dataset loading using Pandas
-- Initial data exploration
+- Data inspection with `.head()`
+- Shape analysis with `.shape`
 - Missing value analysis
-- DataFrame inspection
+- Initial dataset exploration
 
 ---
 
-## Step 2 — Text Preprocessing (In Progress)
+# Step 2 — Text Preprocessing ✅
 
 Completed:
 - Text lowercasing
-- Applying custom functions to DataFrame columns
-- Removing HTML tags
-- Removing punctuation
-- Downloading NLTK stopwords
-- Tokenization
+- HTML tag removal
+- Punctuation removal
 - Stopword removal
-- WordNet lemmatization setup
+- Tokenization
+- Lemmatization
+- Text cleaning pipeline creation
+- Rejoining processed tokens into clean text
 
-Current Work:
-- Applying lemmatization to tokenized reviews
-- Rejoining cleaned tokens into final processed text
+Techniques Used:
+- Regular Expressions (Regex)
+- NLTK Stopwords
+- WordNet Lemmatizer
+
+---
+
+# Step 3 — Feature Engineering (Vectorization) ✅
+
+Completed:
+- Defined Features (X) and Target (y)
+- Imported `train_test_split`
+- Split dataset into training and testing sets
+- Imported `TfidfVectorizer`
+- Configured TF-IDF vectorizer
+- Vectorized training data using `fit_transform`
+- Transformed testing data using `transform`
+- Verified TF-IDF matrix dimensions
+
+Concepts Learned:
+- Feature Extraction
+- Text Vectorization
+- TF-IDF
+- Sparse Matrices
+- Training vs Testing Data
 
 ---
 
 # Upcoming Steps
 
-## Feature Engineering
-- TF-IDF Vectorization
-- Text feature extraction
-
-## Machine Learning Models
+## Step 4 — Baseline Model Training
 - Logistic Regression
-- Model evaluation
-- Accuracy analysis
+- Model training
+- Predictions
+- Accuracy evaluation
+- Confusion matrix
+- Classification report
 
-## Deep Learning
-- LSTM Model
-- Sequential text modeling
+## Step 5 — Deep Learning
+- LSTM Neural Networks
+- Sequential modeling
 
-## Backend Development
-- Flask/FastAPI API
+## Step 6 — Backend API
+- Flask / FastAPI
 
-## Frontend
+## Step 7 — Frontend UI
 - Interactive web interface
 
-## Deployment
+## Step 8 — Deployment
 - Docker
 - Cloud deployment
 
@@ -148,10 +148,10 @@ Current Work:
 
 # Installation
 
-Clone the repository:
+Clone repository:
 
 ```bash
-git clone https://github.com/ravinder75/Sentiment-Analysis-of-Text-Reviews
+git clone https://github.com/YOUR_USERNAME/sentiment-analysis-project.git
 ```
 
 Move into project directory:
@@ -166,7 +166,7 @@ Create virtual environment:
 python3 -m venv venv
 ```
 
-Activate virtual environment:
+Activate environment:
 
 ```bash
 source venv/bin/activate
@@ -190,25 +190,26 @@ jupyter notebook
 
 Through this project, I am learning:
 - NLP preprocessing pipelines
-- Text cleaning techniques
+- Text vectorization techniques
 - Machine Learning workflows
-- Deep Learning basics
+- Model evaluation methods
+- Deep Learning fundamentals
 - API development
 - Full-stack ML deployment
+
+---
+
+# Future Improvements
+
+- BERT / Transformers
+- Streamlit frontend
+- Docker containerization
+- Cloud deployment
+- CI/CD automation
+- Real-time sentiment prediction
 
 ---
 
 # Author
 
 Ravinder K
-
----
-
-# Future Improvements
-
-- Real-time sentiment prediction
-- Transformer models (BERT)
-- Streamlit frontend
-- Docker deployment
-- Cloud hosting
-- CI/CD pipeline
