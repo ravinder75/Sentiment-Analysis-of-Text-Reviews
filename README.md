@@ -1,23 +1,24 @@
 # Sentiment Analysis of Text Reviews
 
-An end-to-end NLP Sentiment Analysis project that classifies movie reviews as Positive or Negative using Machine Learning and Deep Learning techniques.
+An end-to-end NLP Sentiment Analysis project that classifies IMDb movie reviews as Positive or Negative using Machine Learning, Deep Learning, and REST API deployment techniques.
 
 ---
 
 # Project Overview
 
-This project focuses on Natural Language Processing (NLP) and Sentiment Analysis using the IMDb Movie Reviews dataset.
+This project focuses on Natural Language Processing (NLP), Machine Learning, Deep Learning, and API deployment.
 
-The workflow includes:
-- Data collection
+The application analyzes movie review text and predicts whether the sentiment is:
+- Positive
+- Negative
+
+The project includes:
 - Text preprocessing
 - Feature engineering
-- Machine Learning model training
-- Model evaluation
-- Deep Learning
-- API development
-- Frontend integration
-- Deployment
+- Machine Learning models
+- Deep Learning (LSTM)
+- REST API development using Flask
+- Model deployment preparation
 
 ---
 
@@ -26,15 +27,34 @@ The workflow includes:
 ## Programming Language
 - Python
 
-## Libraries & Frameworks
+## Data Science Libraries
 - Pandas
 - NumPy
 - Matplotlib
 - Seaborn
+
+## Machine Learning
 - Scikit-learn
+- Logistic Regression
+
+## Deep Learning
+- TensorFlow
+- Keras
+- LSTM Networks
+
+## NLP
 - NLTK
-- Joblib
+- TF-IDF Vectorization
+
+## Backend Development
+- Flask REST API
+
+## Tools & Platforms
+- Git
+- GitHub
 - Jupyter Notebook
+- Linux
+- VS Code
 
 ---
 
@@ -62,7 +82,11 @@ sentiment-analysis-project/
 │
 ├── models/
 │   ├── sentiment_model.pkl
-│   └── tfidf_vectorizer.pkl
+│   ├── tfidf_vectorizer.pkl
+│   └── lstm_model.h5
+│
+├── api/
+│   └── app.py
 │
 ├── requirements.txt
 ├── README.md
@@ -75,14 +99,13 @@ sentiment-analysis-project/
 # Step 1 — Setup & Data Collection ✅
 
 Completed:
-- Project folder setup
+- Project directory setup
 - Python virtual environment creation
 - Jupyter Notebook setup
-- IMDb dataset loading using Pandas
-- Dataset inspection using `.head()`
-- Shape analysis using `.shape`
+- Dataset loading using Pandas
+- Dataset inspection
 - Missing value analysis
-- Initial data exploration
+- Initial exploration
 
 ---
 
@@ -96,7 +119,6 @@ Completed:
 - Tokenization
 - Lemmatization
 - Text cleaning pipeline
-- Rejoining processed tokens into cleaned text
 
 Techniques Used:
 - Regex
@@ -108,86 +130,120 @@ Techniques Used:
 # Step 3 — Feature Engineering (Vectorization) ✅
 
 Completed:
-- Defined Features (X) and Target (y)
-- Imported `train_test_split`
-- Split dataset into training and testing sets
-- Imported `TfidfVectorizer`
-- Configured TF-IDF vectorizer
-- Vectorized training data using `fit_transform`
-- Transformed testing data using `transform`
-- Verified TF-IDF matrix dimensions
+- Feature and target definition
+- Train-test splitting
+- TF-IDF vectorization
+- Sparse matrix generation
+- Feature transformation
 
 Concepts Learned:
-- Feature Extraction
-- TF-IDF Vectorization
+- TF-IDF
 - Sparse Matrices
-- Training vs Testing datasets
+- Feature Extraction
 
 ---
 
 # Step 4 — Baseline Model Training & Evaluation ✅
 
 Completed:
-- Imported Logistic Regression model
-- Initialized Logistic Regression classifier
-- Trained model on TF-IDF vectors
-- Generated predictions on test data
-- Imported evaluation metrics
-- Evaluated model using classification report
-- Created confusion matrix heatmap
-- Saved trained ML model
-- Saved fitted TF-IDF vectorizer
-- Used Joblib for model persistence
+- Logistic Regression implementation
+- Model training
+- Prediction generation
+- Classification report analysis
+- Confusion matrix visualization
+- Accuracy evaluation
+- Model saving using Joblib
 
 Machine Learning Techniques:
 - Logistic Regression
 - Classification Metrics
-- Accuracy Evaluation
-- Confusion Matrix
 - Model Persistence
 
-Evaluation Metrics Used:
-- Accuracy Score
-- Precision
-- Recall
-- F1-Score
-- Confusion Matrix
+---
+
+# Step 5 — Advanced Deep Learning Model (LSTM) ✅
+
+Completed:
+- TensorFlow installation
+- Keras Tokenizer implementation
+- Sequence preprocessing
+- Sequence padding
+- Embedding layer creation
+- LSTM neural network design
+- Dense output layer implementation
+- Model compilation
+- Deep learning model training
+- Training history visualization
+- Baseline comparison with ML model
+
+Deep Learning Concepts:
+- Recurrent Neural Networks (RNN)
+- LSTM Networks
+- Word Embeddings
+- Sequential Modeling
+- Neural Network Training
+
+Frameworks Used:
+- TensorFlow
+- Keras
+
+---
+
+# Step 6 — Build a Prediction API ✅
+
+Completed:
+- Flask API setup
+- Flask application initialization
+- Model loading inside Flask
+- TF-IDF vectorizer loading
+- Text preprocessing inside API
+- Prediction endpoint creation
+- JSON request parsing
+- Prediction response generation
+- API testing
+
+API Features:
+- REST API architecture
+- JSON input/output
+- Sentiment prediction endpoint
+- Real-time prediction support
+
+Backend Technologies:
+- Flask
+- REST API
+- Joblib
 
 ---
 
 # Current Project Status
 
 Completed:
-- Data collection
-- NLP preprocessing
+- NLP preprocessing pipeline
 - TF-IDF feature engineering
-- Logistic Regression model training
-- Model evaluation
-- Model saving
+- Logistic Regression model
+- LSTM deep learning model
+- Flask REST API integration
+- Model persistence
 
-Project now has a working sentiment classification pipeline.
+The project now supports:
+- Machine Learning predictions
+- Deep Learning predictions
+- API-based sentiment prediction
 
 ---
 
 # Upcoming Steps
 
-## Step 5 — Deep Learning (LSTM)
-- LSTM Neural Networks
-- Sequential text modeling
-- Deep learning sentiment analysis
-
-## Step 6 — Prediction API
-- Flask / FastAPI backend
-- REST API endpoints
-
 ## Step 7 — Interactive UI
-- Frontend web application
-- User review prediction interface
+- Frontend development
+- User interaction interface
+- Real-time sentiment prediction UI
 
-## Step 8 — Deployment
-- Docker containerization
-- Cloud deployment
-- Production hosting
+## Step 8 — Deployment & Documentation
+- Docker deployment
+- Cloud hosting
+- Production deployment
+- Full project documentation
 
 ---
 
@@ -229,6 +285,12 @@ Run Jupyter Notebook:
 jupyter notebook
 ```
 
+Run Flask API:
+
+```bash
+python app.py
+```
+
 ---
 
 # Machine Learning Workflow
@@ -248,33 +310,82 @@ TF-IDF Vectorization
         ↓
 Logistic Regression
         ↓
-Prediction & Evaluation
+Prediction
+```
+
+---
+
+# Deep Learning Workflow
+
+```text
+Raw Text Reviews
+        ↓
+Tokenizer
+        ↓
+Integer Sequences
+        ↓
+Padding
+        ↓
+Embedding Layer
+        ↓
+LSTM Layer
+        ↓
+Dense Layer
+        ↓
+Sentiment Prediction
+```
+
+---
+
+# API Example
+
+## Endpoint
+
+```text
+POST /predict
+```
+
+## Sample Request
+
+```json
+{
+    "review": "This movie was amazing and inspiring"
+}
+```
+
+## Sample Response
+
+```json
+{
+    "sentiment": "Positive"
+}
 ```
 
 ---
 
 # Learning Outcomes
 
-Through this project, I am learning:
+Through this project, I learned:
 - NLP preprocessing pipelines
-- Feature engineering techniques
 - TF-IDF vectorization
-- Machine Learning workflows
 - Logistic Regression
-- Model evaluation
-- Model persistence using Joblib
-- End-to-end ML project development
+- Deep Learning with LSTM
+- TensorFlow & Keras
+- REST API development
+- Flask backend integration
+- Model deployment workflow
 
 ---
 
 # Future Improvements
 
-- BERT / Transformer models
-- Streamlit frontend
-- Docker deployment
-- CI/CD pipeline
-- Cloud hosting
-- Real-time sentiment prediction API
+- BERT / Transformer Models
+- Streamlit Frontend
+- Docker Containerization
+- CI/CD Pipeline
+- Cloud Deployment
+- Real-time Web Interface
+- GPU optimization
 
 ---
 

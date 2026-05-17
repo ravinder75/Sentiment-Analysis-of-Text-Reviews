@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IMDb Sentiment Analyzer - Advanced NLP</title>
+    <!-- Include premium Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- FontAwesome for beautiful icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-primary: #0b0f19;
+            --bg-secondary: #111827;
+            --accent-primary: #6366f1;
+            --accent-secondary: #a855f7;
+            --accent-success: #10b981;
+            --accent-danger: #ef4444;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --glass-bg: rgba(17, 24, 39, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #0f172a 50%, #020617 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 2rem 1rem;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 800px;
+            z-index: 10;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.2) 0%, rgba(168, 85, 247, 0.2) 100%);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            border-radius: 50%;
+            margin-bottom: 1rem;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            animation: pulse 3s infinite alternate;
+        }
+
+        .logo-container i {
+            font-size: 2.5rem;
+            background: linear-gradient(135deg, #818cf8 0%, #c084fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            background: linear-gradient(to right, #ffffff, #c084fc, #6366f1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Glassmorphism Card Style */
+        .card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            margin-bottom: 2rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #a5b4fc;
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 1.2rem;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        textarea:focus {
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.25);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Sample Prompts Grid */
+        .sample-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .sample-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .sample-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(99, 102, 241, 0.3);
+            color: var(--text-main);
+            transform: translateY(-2px);
+        }
+
+        .sample-tag {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            align-self: flex-start;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+            margin-top: 0.75rem;
+        }
+
+        .sample-tag.positive {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+        }
+
+        .sample-tag.negative {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.25);
+        }
+
+        /* Analyze Button styling */
+        .btn-analyze {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent-primary) 0%, var(--accent-secondary) 100%);
+            border: none;
+            border-radius: 16px;
+            color: white;
+            padding: 1.1rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 8px 24px rgba(99, 102, 241, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-analyze::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: all 0.6s ease;
+        }
+
+        .btn-analyze:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 30px rgba(99, 102, 241, 0.45);
+        }
+
+        .btn-analyze:hover::after {
+            left: 100%;
+        }
+
+        .btn-analyze:active {
+            transform: translateY(1px);
+        }
+
+        /* Results Display */
+        .result-section {
+            display: none;
+            margin-top: 2.5rem;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .result-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .sentiment-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.8rem 1.75rem;
+            border-radius: 50px;
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .sentiment-badge.positive {
+            background: rgba(16, 185, 129, 0.12);
+            color: var(--accent-success);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .sentiment-badge.negative {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--accent-danger);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            text-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+        }
+
+        .confidence-circle {
+            text-align: right;
+        }
+
+        .confidence-label {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.2rem;
+        }
+
+        .confidence-val {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: white;
+        }
+
+        /* Meter Bars */
+        .prob-container {
+            margin-bottom: 2rem;
+        }
+
+        .prob-row {
+            margin-bottom: 1.25rem;
+        }
+
+        .prob-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .prob-bar-bg {
+            height: 10px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .prob-bar-fill {
+            height: 100%;
+            border-radius: 10px;
+            width: 0%;
+            transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .prob-bar-fill.positive {
+            background: linear-gradient(90deg, #059669, #34d399);
+            box-shadow: 0 0 12px rgba(52, 211, 153, 0.4);
+        }
+
+        .prob-bar-fill.negative {
+            background: linear-gradient(90deg, #dc2626, #f87171);
+            box-shadow: 0 0 12px rgba(248, 113, 113, 0.4);
+        }
+
+        /* Preprocessing Details */
+        .nlp-info-box {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 16px;
+            padding: 1.5rem;
+        }
+
+        .nlp-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: #a5b4fc;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .nlp-compare {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+
+        .nlp-text-card {
+            background: rgba(15, 23, 42, 0.4);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .nlp-text-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .nlp-text-content {
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: #d1d5db;
+        }
+
+        .nlp-text-content.cleaned {
+            font-family: 'Courier New', Courier, monospace;
+            color: #818cf8;
+            font-weight: 500;
+        }
+
+        /* Footer styling */
+        footer {
+            margin-top: 3rem;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent-primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Spinner */
+        .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); box-shadow: 0 8px 24px rgba(99, 102, 241, 0.2); }
+            100% { transform: scale(1.05); box-shadow: 0 12px 32px rgba(168, 85, 247, 0.3); }
+        }
+
+        @media (max-width: 640px) {
+            .sample-grid {
+                grid-template-columns: 1fr;
+            }
+            .card {
+                padding: 1.5rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <div class="logo-container">
+                <i class="fa-solid fa-brain"></i>
+            </div>
+            <h1>Sentiment Analyzer</h1>
+            <p>Predict movie review polarity using NLTK cleaning & Logistic Regression</p>
+        </header>
+
+        <main class="card">
+            <div class="input-group">
+                <label for="review-input">Movie Review Text</label>
+                <textarea id="review-input" placeholder="Paste a movie review here (e.g., 'An absolute cinematic masterpiece, wonderful story...')."></textarea>
+            </div>
+
+            <div class="input-group">
+                <label>Quick Test Presets</label>
+                <div class="sample-grid">
+                    <div class="sample-card" onclick="setPreset(0)">
+                        <p>"This movie is an absolute masterpiece! The cinematography was stunning, the acting was phenomenal, and the story moved me to tears. Highly recommended!"</p>
+                        <span class="sample-tag positive">Positive Preset</span>
+                    </div>
+                    <div class="sample-card" onclick="setPreset(1)">
+                        <p>"What an absolute waste of time and money. The plot was incredibly weak, the pacing was agonizingly slow, and the performances were completely wooden."</p>
+                        <span class="sample-tag negative">Negative Preset</span>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-analyze" id="btn-analyze" onclick="analyzeSentiment()">
+                <span class="btn-text">Analyze Review Sentiment</span>
+                <span class="spinner" id="loading-spinner"></span>
+            </button>
+
+            <!-- Predictions Display Section -->
+            <div class="result-section" id="result-section">
+                <div class="result-header">
+                    <div>
+                        <span class="confidence-label">Predicted Sentiment</span>
+                        <div class="sentiment-badge" id="sentiment-badge">
+                            <i class="fa-solid" id="sentiment-icon"></i>
+                            <span id="sentiment-text">-</span>
+                        </div>
+                    </div>
+                    <div class="confidence-circle">
+                        <div class="confidence-label">Confidence</div>
+                        <div class="confidence-val" id="confidence-val">0.0%</div>
+                    </div>
+                </div>
+
+                <div class="prob-container">
+                    <div class="prob-row">
+                        <div class="prob-info">
+                            <span>Positive Confidence</span>
+                            <span id="pos-percent">0%</span>
+                        </div>
+                        <div class="prob-bar-bg">
+                            <div class="prob-bar-fill positive" id="pos-bar"></div>
+                        </div>
+                    </div>
+                    <div class="prob-row">
+                        <div class="prob-info">
+                            <span>Negative Confidence</span>
+                            <span id="neg-percent">0%</span>
+                        </div>
+                        <div class="prob-bar-bg">
+                            <div class="prob-bar-fill negative" id="neg-bar"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="nlp-info-box">
+                    <div class="nlp-title">
+                        <i class="fa-solid fa-code-compare"></i>
+                        <span>NLP Tokenization & Processing</span>
+                    </div>
+                    <div class="nlp-compare">
+                        <div class="nlp-text-card">
+                            <div class="nlp-text-label">Processed Output (Lemmatized + Stopwords Removed)</div>
+                            <div class="nlp-text-content cleaned" id="cleaned-text-display">-</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Developed with ❤️ using Flask, Scikit-learn, NLTK, and Joblib</p>
+        </footer>
+    </div>
+
+    <script>
+        const presets = [
+            "This movie is an absolute masterpiece! The cinematography was stunning, the acting was phenomenal, and the story moved me to tears. Highly recommended!",
+            "What an absolute waste of time and money. The plot was incredibly weak, the pacing was agonizingly slow, and the performances were completely wooden."
+        ];
+
+        function setPreset(index) {
+            document.getElementById('review-input').value = presets[index];
+            // Auto focus on the text area
+            document.getElementById('review-input').focus();
+        }
+
+        async function analyzeSentiment() {
+            const reviewInput = document.getElementById('review-input').value.trim();
+            if (!reviewInput) {
+                alert("Please enter or select a movie review to analyze.");
+                return;
+            }
+
+            // UI Elements
+            const btn = document.getElementById('btn-analyze');
+            const btnText = btn.querySelector('.btn-text');
+            const spinner = document.getElementById('loading-spinner');
+            const resultSection = document.getElementById('result-section');
+
+            // Set loading state
+            btn.disabled = true;
+            btnText.style.opacity = '0.7';
+            spinner.style.display = 'inline-block';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ review: reviewInput })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || "An error occurred during prediction.");
+                }
+
+                // Smoothly show result section
+                resultSection.style.display = 'block';
+
+                // Display Sentiment Badge
+                const badge = document.getElementById('sentiment-badge');
+                const icon = document.getElementById('sentiment-icon');
+                const text = document.getElementById('sentiment-text');
+                
+                if (data.prediction.toLowerCase() === 'positive') {
+                    badge.className = 'sentiment-badge positive';
+                    icon.className = 'fa-solid fa-face-smile';
+                    text.innerText = 'Positive';
+                } else {
+                    badge.className = 'sentiment-badge negative';
+                    icon.className = 'fa-solid fa-face-frown';
+                    text.innerText = 'Negative';
+                }
+
+                // Display Confidence Val
+                const confidencePercent = (data.confidence * 100).toFixed(1) + '%';
+                document.getElementById('confidence-val').innerText = confidencePercent;
+
+                // Probability bars
+                const posProb = (data.probabilities.positive * 100).toFixed(1);
+                const negProb = (data.probabilities.negative * 100).toFixed(1);
+
+                document.getElementById('pos-percent').innerText = posProb + '%';
+                document.getElementById('neg-percent').innerText = negProb + '%';
+
+                // Animate bars
+                setTimeout(() => {
+                    document.getElementById('pos-bar').style.width = posProb + '%';
+                    document.getElementById('neg-bar').style.width = negProb + '%';
+                }, 100);
+
+                // NLP displays
+                document.getElementById('cleaned-text-display').innerText = data.cleaned_review || '(No tokens left after stopwords removal)';
+
+                // Scroll to results nicely
+                resultSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            } catch (error) {
+                console.error(error);
+                alert("Error analyzing sentiment: " + error.message);
+            } finally {
+                // Restore button state
+                btn.disabled = false;
+                btnText.style.opacity = '1';
+                spinner.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
